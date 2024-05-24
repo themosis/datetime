@@ -18,8 +18,6 @@ interface Clock {
 
 	public function current_timezone(): DateTimeZone;
 
-	public function default_timezone(): DateTimeZone;
-
 	public function is_past(): bool;
 
 	public function is_future(): bool;

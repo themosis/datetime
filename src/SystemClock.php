@@ -10,54 +10,35 @@ namespace Themosis\Components\Datetime;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use RuntimeException;
 
-final class SystemClock implements Clock {
-	public const DATETIME_FORMAT = 'Y-m-d H:i:s';
+final class SystemClock implements MutableClock {
+	private DateTimeImmutable $current_time;
+	private DateTimeZone $current_timezone;
 
-	private ?DateTimeImmutable $current_time = null;
-
-	private ?DateTimeZone $current_timezone = null;
+	public function __construct(
+		?DateTimeImmutable $current_time = null,
+		?DateTimeZone $current_timezone = null,
+	) {
+		$this->current_timezone = $current_timezone ?: new DateTimeZone( 'UTC' );
+		$this->current_time     = $current_time ?: new DateTimeImmutable( 'now', $this->current_timezone );
+	}
 
 	public function current_time(): DateTimeImmutable {
-		if ( null === $this->current_time ) {
-			$this->current_time = new DateTimeImmutable( 'now', $this->current_timezone() );
-		}
-
 		return $this->current_time;
 	}
 
-	public function now(): self {
-		$self = new self();
-		$self->current_time();
-
-		return $self;
+	public function now(): Clock {
+		return new self();
 	}
 
 	public function current_timezone(): DateTimeZone {
-		if ( null === $this->current_timezone ) {
-			$this->current_timezone = $this->default_timezone();
-		}
-
 		return $this->current_timezone;
 	}
 
-	public function default_timezone(): DateTimeZone {
-		return new DateTimeZone( 'UTC' );
-	}
+	public function set_current_time( DateTimeImmutable $current_time ): MutableClock {
+		$this->current_time = $current_time;
 
-	public function set_current_time( string $time, ?string $format = null, ?DateTimeZone $timezone = null ): void {
-		$datetime = DateTimeImmutable::createFromFormat(
-			format: ( $format ?? self::DATETIME_FORMAT ),
-			datetime: $time,
-			timezone: ( $timezone ?? $this->current_timezone() ),
-		);
-
-		if ( false === $datetime ) {
-			throw new RuntimeException( 'Invalid current time.' );
-		}
-
-		$this->current_time = $datetime;
+		return $this;
 	}
 
 	public function set_current_timezone( string $timezone ): void {

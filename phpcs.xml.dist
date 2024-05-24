@@ -24,6 +24,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <exclude name="WordPress.WP.ClassNameCase"/>
         <exclude name="WordPress.Files.FileName"/>
         <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+        <exclude name="Universal.Operators.DisallowShortTernary"/>
     </rule>
 
     <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>

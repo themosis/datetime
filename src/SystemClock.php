@@ -19,7 +19,9 @@ final class SystemClock implements MutableClock {
 		?DateTimeImmutable $current_time = null,
 		?DateTimeZone $current_timezone = null,
 	) {
-		$this->current_timezone = $current_timezone ?: new DateTimeZone( 'UTC' );
+		$this->current_timezone = $current_timezone ?: ( $current_time
+			? $current_time->getTimezone()
+			: new DateTimeZone( 'UTC' ) );
 		$this->current_time     = $current_time
 			? $current_time->setTimezone( $this->current_timezone )
 			: new DateTimeImmutable( 'now', $this->current_timezone );

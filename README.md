@@ -175,3 +175,34 @@ $clock->is_future();
 
 // true
 ```
+
+### Change current time at runtime
+
+The `SystemClock` implements the `MutableClock` interface which extends the `Clock` interface.
+
+The `SystemClock` can be used as an immutable and mutable clock.
+
+You can modify the clock current time at runtime using the `set_current_time()` method:
+
+```php
+<?php
+
+use Themosis\Components\Datetime\SystemClock;
+
+$clock = new SystemClock();
+$clock->set_current_time( DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', '2020-01-01 11:05:42' ) );
+```
+
+### Change timezone at runtime
+
+You can modify the clock timezone at runtime using the `set_timezone()` method:
+
+```php
+<?php
+
+use Themosis\Components\Datetime\SystemClock;
+
+$clock = new SystemClock();
+$clock->set_timezone( new DateTimeZone( 'Europe/Brussels' ) );
+```
+

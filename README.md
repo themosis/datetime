@@ -52,6 +52,8 @@ sets the current timezone to "UTC".
 To retrieve the clock current time, use the `current_time()` method.
 The method returns a [DateTimeImmutable](https://www.php.net/manual/class.datetimeimmutable) instance you can work with.
 
+> The current_time() method is returning the DateTimeImmutable instance with its value generated at instantiation.
+
 ```php
 <?php
 
@@ -74,6 +76,26 @@ use Themosis\Components\Datetime\SystemClock;
 $clock = new SystemClock();
 $timezone = $clock->timezone();
 ```
+
+### Get new current as "now"
+
+If you need to retrieve the current "now" time from the clock, use the `now()` method:
+
+```php
+<?php
+
+use Themosis\Components\Datetime\SystemClock;
+
+$a_date = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', '2020-01-01 11:05:42' );
+
+$clock = new SystemClock( $a_date );
+$current_time = $clock->current_time();
+// 2020-01-01 11:05:42
+
+$now = $clock->now();
+```
+
+The above `$now` variable is a new `Clock` instance.
 
 ### Create a custom clock
 

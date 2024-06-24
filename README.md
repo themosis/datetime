@@ -77,7 +77,7 @@ $clock = new SystemClock();
 $timezone = $clock->timezone();
 ```
 
-### Get new current as "now"
+### Get "now" clock
 
 If you need to retrieve the current "now" time from the clock, use the `now()` method:
 
@@ -95,7 +95,7 @@ $current_time = $clock->current_time();
 $now = $clock->now();
 ```
 
-The above `$now` variable is a new `Clock` instance.
+The above `$now` variable is a new `Clock` instance. To access its value, use the `current_time()` method.
 
 ### Create a custom clock
 

@@ -20,8 +20,8 @@ final class SystemClockTest extends TestCase {
 		$clock = new SystemClock();
 
 		$this->assertInstanceOf( DateTimeImmutable::class, $clock->current_time() );
-		$this->assertInstanceOf( DateTimeZone::class, $clock->current_timezone() );
-		$this->assertSame( 'UTC', $clock->current_timezone()->getName() );
+		$this->assertInstanceOf( DateTimeZone::class, $clock->timezone() );
+		$this->assertSame( 'UTC', $clock->timezone()->getName() );
 		$this->assertSame( 'UTC', $clock->current_time()->getTimezone()->getName() );
 
 		$current_time = $clock->current_time();
@@ -37,7 +37,7 @@ final class SystemClockTest extends TestCase {
 		$clock = new SystemClock( current_time: $a_date );
 
 		$this->assertSame( $a_date->getTimestamp(), $clock->current_time()->getTimestamp() );
-		$this->assertSame( 'UTC', $clock->current_timezone()->getName() );
+		$this->assertSame( 'UTC', $clock->timezone()->getName() );
 		$this->assertSame( 'UTC', $clock->current_time()->getTimezone()->getName() );
 	}
 
@@ -49,7 +49,7 @@ final class SystemClockTest extends TestCase {
 		$clock = new SystemClock( current_time: $a_date );
 
 		$this->assertSame( $a_date->getTimestamp(), $clock->current_time()->getTimestamp() );
-		$this->assertSame( 'Europe/Brussels', $clock->current_timezone()->getName() );
+		$this->assertSame( 'Europe/Brussels', $clock->timezone()->getName() );
 		$this->assertSame( 'Europe/Brussels', $clock->current_time()->getTimezone()->getName() );
 	}
 
@@ -60,12 +60,12 @@ final class SystemClockTest extends TestCase {
 
 		$clock = new SystemClock(
 			current_time: $a_date,
-			current_timezone: new DateTimeZone( 'America/New_York' ),
+			timezone: new DateTimeZone( 'America/New_York' ),
 		);
 
 		$this->assertSame( $a_date->getTimestamp(), $clock->current_time()->getTimestamp() );
 		$this->assertSame( 'Europe/Paris', $a_date->getTimezone()->getName() );
-		$this->assertSame( 'America/New_York', $clock->current_timezone()->getName() );
+		$this->assertSame( 'America/New_York', $clock->timezone()->getName() );
 		$this->assertSame( 'America/New_York', $clock->current_time()->getTimezone()->getName() );
 	}
 
@@ -85,5 +85,41 @@ final class SystemClockTest extends TestCase {
 		$clock->set_current_time( $clock->current_time()->add( new DateInterval( 'P1M' ) ) );
 
 		$this->assertTrue( $clock->is_future() );
+	}
+
+	#[Test]
+	public function it_can_change_clock_current_time_at_runtime(): void {
+		/** @var DateTimeImmutable $a_date */
+		$a_date = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', '2012-11-23 14:08:56' );
+
+		$clock = new SystemClock(
+			current_time: $a_date,
+		);
+
+		$this->assertSame( $a_date->getTimestamp(), $clock->current_time()->getTimestamp() );
+
+		/** @var DateTimeImmutable $another_date */
+		$another_date = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', '2012-12-25 12:00:00' );
+		$clock->set_current_time( $another_date );
+
+		$this->assertNotSame( $a_date->getTimestamp(), $clock->current_time()->getTimestamp() );
+		$this->assertSame( $another_date->getTimestamp(), $clock->current_time()->getTimestamp() );
+	}
+
+	#[Test]
+	public function it_can_change_clock_timezone_at_runtime(): void {
+		$a_timezone = new DateTimeZone( 'Europe/Paris' );
+
+		$clock = new SystemClock(
+			timezone: $a_timezone,
+		);
+
+		$this->assertSame( $a_timezone->getName(), $clock->timezone()->getName() );
+
+		$another_timezone = new DateTimeZone( 'America/New_York' );
+		$clock->set_timezone( $another_timezone );
+
+		$this->assertNotSame( $a_timezone->getName(), $clock->timezone()->getName() );
+		$this->assertSame( $another_timezone->getName(), $clock->timezone()->getName() );
 	}
 }

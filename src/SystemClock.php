@@ -13,18 +13,18 @@ use DateTimeZone;
 
 final class SystemClock implements MutableClock {
 	private DateTimeImmutable $current_time;
-	private DateTimeZone $current_timezone;
+	private DateTimeZone $timezone;
 
 	public function __construct(
 		?DateTimeImmutable $current_time = null,
-		?DateTimeZone $current_timezone = null,
+		?DateTimeZone $timezone = null,
 	) {
-		$this->current_timezone = $current_timezone ?: ( $current_time
+		$this->timezone     = $timezone ?: ( $current_time
 			? $current_time->getTimezone()
 			: new DateTimeZone( 'UTC' ) );
-		$this->current_time     = $current_time
-			? $current_time->setTimezone( $this->current_timezone )
-			: new DateTimeImmutable( 'now', $this->current_timezone );
+		$this->current_time = $current_time
+			? $current_time->setTimezone( $this->timezone )
+			: new DateTimeImmutable( 'now', $this->timezone );
 	}
 
 	public function current_time(): DateTimeImmutable {
@@ -32,11 +32,13 @@ final class SystemClock implements MutableClock {
 	}
 
 	public function now(): Clock {
-		return new self();
+		return new self(
+			timezone: $this->timezone,
+		);
 	}
 
-	public function current_timezone(): DateTimeZone {
-		return $this->current_timezone;
+	public function timezone(): DateTimeZone {
+		return $this->timezone;
 	}
 
 	public function set_current_time( DateTimeImmutable $current_time ): MutableClock {
@@ -45,8 +47,10 @@ final class SystemClock implements MutableClock {
 		return $this;
 	}
 
-	public function set_current_timezone( string $timezone ): void {
-		$this->current_timezone = new DateTimeZone( $timezone );
+	public function set_timezone( DateTimeZone $timezone ): MutableClock {
+		$this->timezone = $timezone;
+
+		return $this;
 	}
 
 	public function is_past(): bool {

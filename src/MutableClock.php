@@ -9,7 +9,10 @@ declare(strict_types=1);
 namespace Themosis\Components\Datetime;
 
 use DateTimeImmutable;
+use DateTimeZone;
 
 interface MutableClock extends Clock {
 	public function set_current_time( DateTimeImmutable $current_time ): MutableClock;
+
+	public function set_timezone( DateTimeZone $timezone ): MutableClock;
 }

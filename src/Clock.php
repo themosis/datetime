@@ -16,7 +16,7 @@ interface Clock {
 
 	public function current_time(): DateTimeImmutable;
 
-	public function current_timezone(): DateTimeZone;
+	public function timezone(): DateTimeZone;
 
 	public function is_past(): bool;
 

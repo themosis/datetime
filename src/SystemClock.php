@@ -11,53 +11,61 @@ namespace Themosis\Components\Datetime;
 use DateTimeImmutable;
 use DateTimeZone;
 
-final class SystemClock implements MutableClock {
-	private DateTimeImmutable $current_time;
-	private DateTimeZone $timezone;
+final class SystemClock implements MutableClock
+{
+    private DateTimeImmutable $currentTime;
+    private DateTimeZone $timezone;
 
-	public function __construct(
-		?DateTimeImmutable $current_time = null,
-		?DateTimeZone $timezone = null,
-	) {
-		$this->timezone     = $timezone ?: ( $current_time
-			? $current_time->getTimezone()
-			: new DateTimeZone( 'UTC' ) );
-		$this->current_time = $current_time
-			? $current_time->setTimezone( $this->timezone )
-			: new DateTimeImmutable( 'now', $this->timezone );
-	}
+    public function __construct(
+        ?DateTimeImmutable $currentTime = null,
+        ?DateTimeZone $timezone = null,
+    ) {
+        $this->timezone     = $timezone ?: ( $currentTime
+            ? $currentTime->getTimezone()
+            : new DateTimeZone('UTC') );
+        $this->currentTime = $currentTime
+            ? $currentTime->setTimezone($this->timezone)
+            : new DateTimeImmutable('now', $this->timezone);
+    }
 
-	public function current_time(): DateTimeImmutable {
-		return $this->current_time;
-	}
+    public function currentTime(): DateTimeImmutable
+    {
+        return $this->currentTime;
+    }
 
-	public function now(): Clock {
-		return new self(
-			timezone: $this->timezone,
-		);
-	}
+    public function now(): Clock
+    {
+        return new self(
+            timezone: $this->timezone,
+        );
+    }
 
-	public function timezone(): DateTimeZone {
-		return $this->timezone;
-	}
+    public function timezone(): DateTimeZone
+    {
+        return $this->timezone;
+    }
 
-	public function set_current_time( DateTimeImmutable $current_time ): MutableClock {
-		$this->current_time = $current_time;
+    public function setCurrentTime(DateTimeImmutable $currentTime): MutableClock
+    {
+        $this->currentTime = $currentTime;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function set_timezone( DateTimeZone $timezone ): MutableClock {
-		$this->timezone = $timezone;
+    public function setTimezone(DateTimeZone $timezone): MutableClock
+    {
+        $this->timezone = $timezone;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function is_past(): bool {
-		return $this->current_time()->getTimestamp() < $this->now()->current_time()->getTimestamp();
-	}
+    public function isPast(): bool
+    {
+        return $this->currentTime()->getTimestamp() < $this->now()->currentTime()->getTimestamp();
+    }
 
-	public function is_future(): bool {
-		return $this->current_time()->getTimestamp() > $this->now()->current_time()->getTimestamp();
-	}
+    public function isFuture(): bool
+    {
+        return $this->currentTime()->getTimestamp() > $this->now()->currentTime()->getTimestamp();
+    }
 }

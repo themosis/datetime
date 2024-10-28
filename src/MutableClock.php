@@ -11,8 +11,9 @@ namespace Themosis\Components\Datetime;
 use DateTimeImmutable;
 use DateTimeZone;
 
-interface MutableClock extends Clock {
-	public function set_current_time( DateTimeImmutable $current_time ): MutableClock;
+interface MutableClock extends Clock
+{
+    public function setCurrentTime(DateTimeImmutable $currentTime): MutableClock;
 
-	public function set_timezone( DateTimeZone $timezone ): MutableClock;
+    public function setTimezone(DateTimeZone $timezone): MutableClock;
 }
